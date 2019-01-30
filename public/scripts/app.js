@@ -8,17 +8,6 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-// const obj = {
-//     name:'Ashish',
-//     getName(){
-//         return this.name
-//     }
-// }
-
-// const getName = obj.getName.bind({name:'Hello World'})
-
-// console.log(getName())
-
 var Indecision = function (_React$Component) {
     _inherits(Indecision, _React$Component);
 
@@ -30,8 +19,9 @@ var Indecision = function (_React$Component) {
 
         _this.handleDeleteOptions = _this.handleDeleteOptions.bind(_this);
         _this.handlePick = _this.handlePick.bind(_this);
+        _this.handleAddOption = _this.handleAddOption.bind(_this);
         _this.state = {
-            options: ['Thing One', 'Thing Two', 'Thing three']
+            options: []
         };
         return _this;
     }
@@ -53,6 +43,22 @@ var Indecision = function (_React$Component) {
             });
         }
     }, {
+        key: 'handleAddOption',
+        value: function handleAddOption(option) {
+            if (!option) {
+                return 'Enter valid value please';
+            } else if (this.state.options.indexOf(option) > -1) {
+                return 'This Option already exists';
+            } else {
+                this.setState(function (prevState) {
+                    return {
+                        options: prevState.options.concat(option)
+                        // options:prevState.options.concat([option])
+                    };
+                });
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
             var title = "Decision Maker";
@@ -64,7 +70,7 @@ var Indecision = function (_React$Component) {
                 React.createElement(Header, { title: title, subtitle: subtitle }),
                 React.createElement(Action, { hasOptions: this.state.options.length > 0, handlePick: this.handlePick }),
                 React.createElement(Options, { options: this.state.options, handleDeleteOptions: this.handleDeleteOptions }),
-                React.createElement(AddOption, null)
+                React.createElement(AddOption, { handleAddOption: this.handleAddOption })
             );
         }
     }]);
@@ -196,18 +202,42 @@ var Option = function (_React$Component5) {
 var AddOption = function (_React$Component6) {
     _inherits(AddOption, _React$Component6);
 
-    function AddOption() {
+    function AddOption(props) {
         _classCallCheck(this, AddOption);
 
-        return _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).apply(this, arguments));
+        var _this6 = _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).call(this, props));
+
+        _this6.handleSubmit = _this6.handleSubmit.bind(_this6);
+        _this6.state = {
+            error: undefined
+        };
+        return _this6;
     }
 
     _createClass(AddOption, [{
+        key: 'handleSubmit',
+        value: function handleSubmit(e) {
+            e.preventDefault();
+            var option = e.target.elements.option.value.trim();
+            e.target.elements.option.value = '';
+
+            // if function is explicitly return anything that will be errors
+            var error = this.props.handleAddOption(option);
+            this.setState(function () {
+                return { error: error };
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return React.createElement(
                 'div',
                 null,
+                this.state.error && React.createElement(
+                    'p',
+                    null,
+                    this.state.error
+                ),
                 React.createElement(
                     'form',
                     { onSubmit: this.handleSubmit, method: 'POST' },
