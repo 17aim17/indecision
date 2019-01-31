@@ -7,9 +7,30 @@ class Counter extends React.Component {
 
         // setup default state value
         this.state ={
-            count:0,
-            name:'Ashish'
+            count:0
         }
+    }
+
+    componentDidMount() {
+        try {
+            const getCount = parseInt(localStorage.getItem('count'))
+            if(!isNaN(getCount)) {
+                this.setState(()=>{
+                    return {
+                     count:getCount
+                    }
+                 })
+            }
+        } catch (error) {
+            
+        }
+    }
+
+    componentDidUpdate(prevProps ,prevState){
+        if(prevState.count !== this.state.count){
+            localStorage.setItem('count',this.state.count)
+        }
+       
     }
 
     addOne() {
@@ -62,9 +83,6 @@ class Counter extends React.Component {
     }
 }
 
-Counter.defaultProps ={
-    count:0
-}
 
 ReactDOM.render(<Counter/> , document.getElementById('app'))
 // let count =0

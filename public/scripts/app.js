@@ -22,12 +22,43 @@ var Indecision = function (_React$Component) {
         _this.handleDeleteOption = _this.handleDeleteOption.bind(_this);
         // make options as state
         _this.state = {
-            options: props.options
+            options: []
         };
         return _this;
     }
 
+    // lifecycle method only in class base component
+
+
     _createClass(Indecision, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            try {
+                var json = localStorage.getItem('options');
+                var options = JSON.parse(json);
+                if (options) {
+                    this.setState(function () {
+                        return {
+                            options: options
+                        };
+                    });
+                }
+            } catch (e) {}
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate(prevProps, prevState) {
+            if (prevState.options.length !== this.state.options.length) {
+                var json = JSON.stringify(this.state.options);
+                localStorage.setItem('options', json);
+            }
+        }
+    }, {
+        key: 'componentWillUnmont',
+        value: function componentWillUnmont() {
+            console.log('deleted');
+        }
+    }, {
         key: 'handlePick',
         value: function handlePick() {
             var index = Math.floor(Math.random() * this.state.options.length);
@@ -91,10 +122,6 @@ var Indecision = function (_React$Component) {
 
     return Indecision;
 }(React.Component);
-
-Indecision.defaultProps = {
-    options: []
-};
 
 var Header = function Header(props) {
     return React.createElement(
@@ -162,6 +189,11 @@ var Options = function Options(props) {
             { onClick: props.handleDeleteOptions },
             'Remove All'
         ),
+        props.options.length === 0 && React.createElement(
+            'p',
+            null,
+            'Please add an option to get started'
+        ),
         props.options.map(function (option) {
             return React.createElement(Option, {
                 key: option,
@@ -171,19 +203,6 @@ var Options = function Options(props) {
         })
     );
 };
-
-// class Options extends React.Component {
-//     render () {
-//         return (
-//             <div>
-//                 <button onClick={this.props.handleDeleteOptions}>Remove All</button>
-//                 {
-//                     this.props.options.map(option=> <Option key={option}  optionText={option}/> )
-//                 }
-//             </div>
-//         )
-//     }
-// }
 
 // different options here 
 var Option = function Option(props) {
@@ -202,19 +221,6 @@ var Option = function Option(props) {
         )
     );
 };
-
-// class Option extends React.Component {
-//     render () {
-//         return (
-//             <div>
-//                 {
-//                    <p>{this.props.optionText}</p> 
-//                 }
-//             </div>
-//         )
-//     }
-// }
-
 
 var AddOption = function (_React$Component2) {
     _inherits(AddOption, _React$Component2);
@@ -236,8 +242,9 @@ var AddOption = function (_React$Component2) {
         value: function handleSubmit(e) {
             e.preventDefault();
             var option = e.target.elements.option.value.trim();
-            e.target.elements.option.value = '';
-
+            if (!error) {
+                e.target.elements.option.value = '';
+            }
             // if function is explicitly return anything that will be errors
             var error = this.props.handleAddOption(option);
             this.setState(function () {
@@ -271,15 +278,5 @@ var AddOption = function (_React$Component2) {
 
     return AddOption;
 }(React.Component);
-
-// stateless functional component
-// const User = (props) => {
-//     return (
-//         <div>
-//             <p>Name:{props.name}</p>
-//             <p>Age:{props.age}</p>
-//         </div>
-//     )
-// }
 
 ReactDOM.render(React.createElement(Indecision, null), document.getElementById('app'));
