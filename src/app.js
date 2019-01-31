@@ -1,12 +1,13 @@
 class Indecision extends React.Component {
-    // make options as state
     constructor(props) {
         super(props)
         this.handleDeleteOptions =this.handleDeleteOptions.bind(this)
         this.handlePick =this.handlePick.bind(this)
         this.handleAddOption =this.handleAddOption.bind(this)
+        this.handleDeleteOption =this.handleDeleteOption.bind(this)
+         // make options as state
         this.state ={
-            options:[]
+            options:props.options
         };
     }
 
@@ -22,6 +23,14 @@ class Indecision extends React.Component {
                 options:[]
             }
         })
+    }
+
+    handleDeleteOption(option) {
+        this.setState((prevState)=>{
+           return { 
+               options:prevState.options.filter((op)=>op!==option) 
+            }
+        })     
     }
 
     handleAddOption(option) {
@@ -41,27 +50,37 @@ class Indecision extends React.Component {
     }
 
     render(){
-        const title = "Decision Maker"
         const subtitle ="Let Computer control your life"
-       
         return (
             <div>
-                <Header title={title} subtitle={subtitle}/>
+                <Header  subtitle={subtitle}/>
                 <Action hasOptions={this.state.options.length > 0} handlePick={this.handlePick}/>
-                <Options options={this.state.options} handleDeleteOptions={this.handleDeleteOptions}/>
+                <Options 
+                    options={this.state.options} 
+                    handleDeleteOption={this.handleDeleteOption} 
+                    handleDeleteOptions={this.handleDeleteOptions}
+                />
                 <AddOption handleAddOption={this.handleAddOption}/>
             </div>
         )
     }
 }
 
+Indecision.defaultProps = {
+    options:[]
+}
+
 const Header =(props) => {
     return (
         <div>
             <h1>{props.title}</h1>
-            <h2>{props.subtitle}</h2>
+            {props.subtitle && <h2>{props.subtitle}</h2>}
         </div>
     )
+}
+
+Header.defaultProps ={
+    title :'Decision Maker'
 }
 // class Header extends React.Component {
 //     render(){
@@ -86,7 +105,6 @@ const Action = (props) => {
 }
 
 // class Action extends React.Component {
-    
 //     render(){
 //         return (
 //            <div>
@@ -104,7 +122,13 @@ const Options = (props) =>{
         <div>
             <button onClick={props.handleDeleteOptions}>Remove All</button>
             {
-                props.options.map(option=> <Option key={option}  optionText={option}/> )
+                props.options.map(option=> (
+                    <Option 
+                        key={option}  
+                        optionText={option}
+                        handleDeleteOption={props.handleDeleteOption}
+                    />
+                ) )
             }
         </div>
     )
@@ -127,12 +151,17 @@ const Options = (props) =>{
 const Option = (props) =>{
     return (
         <div>
-            {
-               <p>{props.optionText}</p> 
-            }
+                {props.optionText}
+                <button 
+                    onClick={(e)=>{
+                        props.handleDeleteOption(props.optionText)
+                    }}
+                >Remove
+                </button>
         </div>
     )
 }
+
 // class Option extends React.Component {
 //     render () {
 //         return (
@@ -144,6 +173,7 @@ const Option = (props) =>{
 //         )
 //     }
 // }
+
 
 class AddOption extends React.Component {
     constructor(props) {
