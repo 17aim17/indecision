@@ -1,12 +1,12 @@
-import React from 'react'
-const Header =(props) => {
-    return (
-        <div>
-            <h1>{props.title}</h1>
-            {props.subtitle && <h2>{props.subtitle}</h2>}
-        </div>
-    )
-}
+import React from 'react';
+const Header = props => {
+  return (
+    <div>
+      <h1>{props.title}</h1>
+      {props.subtitle && <h2>{props.subtitle}</h2>}
+    </div>
+  );
+};
 
 // class Header extends React.Component {
 //     render(){
@@ -19,8 +19,7 @@ const Header =(props) => {
 //     }
 // }
 
-
-Header.defaultProps ={
-    title :'Decision Maker'
-}
-export default Header
+Header.defaultProps = {
+  title: 'Decision Maker'
+};
+export default Header;
