@@ -1,0 +1,15 @@
+.option {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: $m-size;
+  align-items: center;
+  border-bottom: 1px solid $blue;
+}
+.option__text {
+  color: #fff;
+  font-weight: 500;
+  font-size: 2rem;
+  margin: 0;
+  word-break: break-all;
+}
